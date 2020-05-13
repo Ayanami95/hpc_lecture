@@ -1,4 +1,4 @@
-ID NUMBER: 20M31266\\
+ID NUMBER: 20M31266\n
 NAME: GAO LEI
 
 # hpc_lecture
