@@ -28,10 +28,11 @@ int main(int argc, char** argv) {
   MPI_Type_commit(&MPI_BODY);
 
   MPI_Win win;
+  MPI_Win_creat(jbody, N/size*5*sizeof(double), 5*sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+  
   for(int irank=0; irank<size; irank++) {
     //MPI_Send(jbody, N/size, MPI_BODY, send_to, 0, MPI_COMM_WORLD);
     //MPI_Recv(jbody, N/size, MPI_BODY, recv_from, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    MPI_Win_Creat(jbody, N/size, MPI_BODY, sent_to, 0, MPI_COMM_WORLD);
     MPI_Win_fence(0, win);
     MPI_Put(jbody, N/size, MPI_BODY, send_to, 0, N/size, MPI_BODY, win);
     MPI_Win_fence(0, win);
