@@ -11,7 +11,40 @@ int main() {
     m[i] = drand48();
     fx[i] = fy[i] = 0;
   }
-  for(int i=0; i<N; i++) {
+  __m256 fxvec = _mm256_set1_ps(0);
+  __m256 fyvec = _mm256_set1_ps(0);
+  __m256 xvec = _mm256_load_ps(x);
+  __m256 yvec = _mm256_load_ps(y);
+  __m256 mvec = _mm256_load_ps(m);
+  
+  __m256 zero = _mm256_set1_ps(0);
+  __m256 one = _mm256_set1_ps(1);
+  
+  for(int i=0; i<N; i++){
+	  __m256 xi = _mm256_set1_ps(x[i]);
+	  __m256 yi = _mm256_set1_ps(y[i]);
+	  __m256 rx = _mm256_sub_ps(xi, xvec);
+	  __m256 ry = _mm256_sub_ps(yi, yvec);
+	  __m256 rx2 = _mm256_mul_ps(rx, rx);
+	  __m256 ry2 = _mm256_mul_ps(ry, ry);
+	  __m256 r2 = _mm256_add_ps(rx2, ry2);
+	  
+	  // To avoid the situation when r2 = 0
+	  __m256 mask = _mm256_cmp_ps(r2, zero, _CMP_GT_OQ);
+	  r2 = _mm256_belndv_ps(one, r2, mask);
+	  
+	  __m256 r = _mm256_rsqrt_ps(r2);
+	  r2 = _mm256_mul_ps(r, r);
+	  __m256 r3 = _mm256_mul_ps(r2, r);
+	  
+	  fxvec = _mm256_mul_ps(rx, mvec);
+	  fxvec = _mm256_mul_ps(fxvec, r3);
+	  fyvec = _mm256_mul_ps(ry, mvec);
+	  fyvec = _mm256_mul_ps(fyvec, r3);
+	  
+	  printf("%d %g %g\n",i,fx[i],fy[i]);
+	  }
+  /*for(int i=0; i<N; i++) {
     for(int j=0; j<N; j++) {
       if(i != j) {
         double rx = x[i] - x[j];
@@ -22,5 +55,5 @@ int main() {
       }
     }
     printf("%d %g %g\n",i,fx[i],fy[i]);
-  }
+  }*/
 }
