@@ -6,7 +6,7 @@ __global__ void bucket_sort(int* key, int* bucket, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
     
-    atomicAdd(bucket+key[i], 1);
+    atomicAdd(&bucket[key[i]], 1);
     __syncthreads();
 
     for (int j = 0, k = 0; j <= i; k++) {
