@@ -48,4 +48,5 @@ int main (int argc, char** argv) {
   double time = chrono::duration<double>(toc - tic).count();
   printf("N=%d: %lf s (%lf GB/s)\n",NX*NY,time,4*NX*NY/time/1e9);
   MPI_Finalize();
+  //
 }

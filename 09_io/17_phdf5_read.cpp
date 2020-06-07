@@ -50,4 +50,5 @@ int main (int argc, char** argv) {
   printf("sum=%d\n",sum);
   printf("N=%d: %lf s (%lf GB/s)\n",NX*NY,time,4*NX*NY/time/1e9);
   MPI_Finalize();
+  //
 }
