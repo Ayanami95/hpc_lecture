@@ -44,7 +44,11 @@ int main() {
   printf("\n");
 #pragma omp parallel
   {
+<<<<<<< HEAD
 #pragma omp single
+=======
+#pragma omp serial
+>>>>>>> f743798ff25f63cf544466b630c34b35525ca76f
   merge_sort(vec, 0, n-1);
   }
   for (int i=0; i<n; i++) {

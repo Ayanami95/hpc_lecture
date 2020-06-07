@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   int size, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  Body ibody[N/size], jbody[N/size];
+  Body ibody[N/size], jbody[N/size], buffer[N/size];
   srand48(rank);
   for(int i=0; i<N/size; i++) {
     ibody[i].x = jbody[i].x = drand48();
@@ -21,11 +21,11 @@ int main(int argc, char** argv) {
     ibody[i].m = jbody[i].m = drand48();
     ibody[i].fx = jbody[i].fx = ibody[i].fy = jbody[i].fy = 0;
   }
-  int recv_from = (rank + 1) % size;
   int send_to = (rank - 1 + size) % size;
   MPI_Datatype MPI_BODY;
   MPI_Type_contiguous(5, MPI_DOUBLE, &MPI_BODY);
   MPI_Type_commit(&MPI_BODY);
+<<<<<<< HEAD
   
   MPI_Win win;
   MPI_Win_creat(jbody, N/size*5*sizeof(double), 5*sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -38,6 +38,15 @@ int main(int argc, char** argv) {
         recv_jbody[i] = jbody[i];
     MPI_Win_fence(0, win);
     MPI_Put(recv_jbody, N/size, MPI_BODY, send_to, 0, N/size, MPI_BODY, win);
+=======
+  MPI_Win win;
+  MPI_Win_create(jbody, (N/size)*sizeof(Body), sizeof(Body), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+  for(int irank=0; irank<size; irank++) {
+    for(int i=0; i<N/size; i++)
+      buffer[i] = jbody[i];
+    MPI_Win_fence(0, win);
+    MPI_Put(buffer, N/size, MPI_BODY, send_to, 0, N/size, MPI_BODY, win);
+>>>>>>> f743798ff25f63cf544466b630c34b35525ca76f
     MPI_Win_fence(0, win);
     for(int i=0; i<N/size; i++) {
       for(int j=0; j<N/size; j++) {
